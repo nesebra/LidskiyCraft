@@ -7,34 +7,45 @@ LidskiyCraft.default_options = {
 	frameX = 0,
 	frameY = 0,
 	hide = false,
-
-	--custom
-	isForwarderActive = false
 };
 
 local checkboxes = 0
 
+local prefix = "ldskcr"
+
 local settings = {
     {
-        settingText = "Officer Trade Forwarder",
+        settingText = "Forward to Officer",
         settingKey = "isForwarderEnabled"
     },
     {
-        settingText = "Заказы на Пыткакалом (ткань + посох/оффхенд)",
+        settingText = "Listen Forwarder",
+        settingKey = "isListenForwarder"
+    },
+    {
+        settingText = "Пыткакалом (ткань + посох/оффхенд)",
         settingKey = "isCraftsForKal"
     },
     {
-        settingText = "Заказы на Есдэдди (кузнечные инструменты)",
-        settingKey = "isCraftsForDaddy"
+        settingText = "Пыткакалом (трактаты)",
+        settingKey = "isTractatCraftsForKal"
     },
     {
-        settingText = "Заказы на Пивнойвлэд (кожа)",
+        settingText = "Есдэдди (инструменты)",
+        settingKey = "isInstrumentsCraftsForDaddy"
+    },
+    {
+        settingText = "Есдэдди (кольца)",
+        settingKey = "isRingsCraftsForDaddy"
+    },
+    {
+        settingText = "Пивнойвлэд (кожа)",
         settingKey = "isCraftsForBeerVlad"
     },
     {
-        settingText = "Заказы на Блэтвлэд (кузнечное оружее)",
+        settingText = "Блэтвлэд (оружее)",
         settingKey = "isCraftsForBlyatVlad"
-    },
+    }
 }
 
 function LidskiyCraft.OnReady()
@@ -55,7 +66,7 @@ function LidskiyCraft.CreateUIFrame()
 
 	-- create the UI frame
 	LidskiyCraft.UIFrame = CreateFrame("Frame",nil,UIParent,"BasicFrameTemplateWithInset");
-	LidskiyCraft.UIFrame:SetSize(325,200);
+	LidskiyCraft.UIFrame:SetSize(270,280);
 	LidskiyCraft.UIFrame:SetPoint(_G.LidskiyPrefs.frameRef, _G.LidskiyPrefs.frameX, _G.LidskiyPrefs.frameY);
 	LidskiyCraft.UIFrame.TitleBg:SetHeight(30);
 	LidskiyCraft.UIFrame.title = LidskiyCraft.UIFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
@@ -100,6 +111,7 @@ end
 
 function CreateCheckbox(checkboxText, key, checkboxTooltip)
     local checkbox = CreateFrame("CheckButton", "LidskiyCraftCheckboxID" .. checkboxes, LidskiyCraft.UIFrame, "UICheckButtonTemplate")
+
     checkbox.Text:SetText(checkboxText)
     checkbox:SetPoint("TOPLEFT", LidskiyCraft.UIFrame, "TOPLEFT", 10, -30 + (checkboxes * -30))
 
@@ -171,75 +183,130 @@ function LidskiyCraft.OnEvent(frame, event, ...)
 	end
 
 	if (event == "CHAT_MSG_CHANNEL") then      
-		local text, playerName, _, channelName = ... 
+		local text, playerName, _, channelName = ...
+		
+		local isForwarderEnabled = LidskiyPrefs.settingsKeys["isForwarderEnabled"]
+		local isListenForwarder = LidskiyPrefs.settingsKeys["isListenForwarder"]
+		local target = string.gsub(playerName, "%-[^||||]+", "")		
 
-		local player = UnitName("player") 
-		local sender = string.gsub(playerName, "%-[^||||]+", "")
-		local isInSearch = LidskiyCraft.IsInSearch(text)
-
-		if (LidskiyPrefs.settingsKeys["isForwarderEnabled"]) then
-			LidskiyCraft.TryToForwardMessage(sender, text)
+		if (isForwarderEnabled == true) then
+			LidskiyCraft.ForwardMessage(target, text)			
 		end
-        
-        if sender ~= player and isInSearch == true then
-            
-            local isCloth = LidskiyCraft.IsCloth(text)
-            local isStaff = LidskiyCraft.IsStaff(text)
-            local isInstrument = LidskiyCraft.IsInstrument(text)
-            local isLeather = LidskiyCraft.IsLeather(text)
-            local isWeapons = LidskiyCraft.IsWeapons(text)
 
-            local Is590 = LidskiyCraft.Is590(text)
-            local Is606 = LidskiyCraft.Is606(text)
-			local Is619 = LidskiyCraft.Is619(text)
-			local Is636 = LidskiyCraft.Is636(text)
+		if (isListenForwarder == false) then
+			if (LidskiyCraft.IsMessageUsefull(text)) then
+				LidskiyCraft.AnalyzeMessage(target, text)
+			end						
+		end				
+    end
 
-			if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
+	if (event == 'CHAT_MSG_ADDON') then
+		local prefix, text, channel, sender, target = ... 
+
+		local isForwarderEnabled = LidskiyPrefs.settingsKeys["isForwarderEnabled"]
+		local isListenForwarder = LidskiyPrefs.settingsKeys["isListenForwarder"]
+
+		if (isListenForwarder == true) then
+
+			local targetIndex = string.find(text, '->')
+
+			if (targetIndex ~= nil) then
+				local target = string.sub(text, 1, targetIndex - 2)
+				local targetText = string.sub(text, targetIndex - 2, string.len(text))				
+				LidskiyCraft.AnalyzeMessage(target, targetText)
+			end
+
+		end			      
+	end
+
+end
+
+
+function LidskiyCraft.ForwardMessage(target, text)
+	
+	if (LidskiyCraft.IsMessageUsefull(text)) then
+		SendChatMessage(target .. " -> " .. text, "OFFICER")
+		C_ChatInfo.SendAddonMessage(prefix, target .. " -> " .. text, "OFFICER")
+    end
+
+end 
+
+function LidskiyCraft.AnalyzeMessage(target, text)
+
+        local isCloth = LidskiyCraft.IsCloth(text)
+        local isStaff = LidskiyCraft.IsStaff(text)
+        local isInstrument = LidskiyCraft.IsInstrument(text)
+        local isLeather = LidskiyCraft.IsLeather(text)
+        local isWeapons = LidskiyCraft.IsWeapons(text)
+        local isJewerly = LidskiyCraft.IsJewerly(text)
+        local isTraktat = LidskiyCraft.IsTraktat(text)
+
+        local Is590 = LidskiyCraft.Is590(text)
+        local Is606 = LidskiyCraft.Is606(text)
+		local Is619 = LidskiyCraft.Is619(text)
+		local Is636 = LidskiyCraft.Is636(text)
+
+		if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
 
             if (isCloth) then
             	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("6k", sender, "Пыткакалом")
+                	LidskiyCraft.SendCraftMessage("6k", target, "Пыткакалом", text)
                 else
-                	LidskiyCraft.SendCraftMessage("4.5k", sender, "Пыткакалом")
+                	LidskiyCraft.SendCraftMessage("4.5k", target, "Пыткакалом", text)
             	end
         	end
 
         	if (isStaff) then
             	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("6k", sender, "Пыткакалом")
+            		LidskiyCraft.SendCraftMessage("7k", target, "Пыткакалом", text)
                 else
-                	LidskiyCraft.SendCraftMessage("4.5k", sender, "Пыткакалом")
+                	LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
             	end
         	end
 
-			end
+		end
 
-			if (LidskiyPrefs.settingsKeys["isCraftsForDaddy"]) then
+		if (LidskiyPrefs.settingsKeys["isTractatCraftsForKal"]) then
 
-				if (isInstrument) then
-                	LidskiyCraft.SendCraftMessage("4k", sender, "Есдэдди")
-            	end	
+			if (isTraktat) then
+                LidskiyCraft.SendTraktatCraftMessage("250g", target, "Пыткакалом", text)
+            end        	
+				
+		end
 
-			end
+		if (LidskiyPrefs.settingsKeys["isInstrumentsCraftsForDaddy"]) then
 
-			if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
+			if (isInstrument) then
+                LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
+            end
+	
 
-				if (isLeather) then
-                	LidskiyCraft.SendVladCraftMessage("5k", sender, "Пивнойвлэд")
-            	end	
+		end
 
-			end
+		if (LidskiyPrefs.settingsKeys["isRingsCraftsForDaddy"]) then
 
-			if (LidskiyPrefs.settingsKeys["isCraftsForBlyatVlad"]) then
+			if (isJewerly) then
+            	LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
+            end	
+        end            
 
-				if (isWeapons) then
-                	LidskiyCraft.SendVladCraftMessageFree(sender, "Блэтвлэд")
-            	end	
 
-			end
+		if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
 
-        end
-    end
+			if (isLeather) then
+            	LidskiyCraft.SendVladCraftMessage("5k", target, "Пивнойвлэд", text)
+            end	
+
+		end
+
+		if (LidskiyPrefs.settingsKeys["isCraftsForBlyatVlad"]) then
+
+			if (isWeapons) then
+            	LidskiyCraft.SendVladCraftMessageFree(target, "Блэтвлэд", text)
+            end	
+
+		end        
+
 end
 
 function LidskiyCraft.SetFontSize(string, size)
@@ -269,26 +336,43 @@ end
 
 function LidskiyCraft.UpdateFrame()
 
-	-- update the main frame state here
-	-- LidskiyCraft.Label:SetText(string.format("%d", GetTime()));
 end
 
 -------------------------------------------------------------------
 
 function LidskiyCraft.IsCloth(message)    
     
-    local isCloth = string.find(message, "Освященн") ~= nil
-    or string.find(message, "плащ") ~= nil
-    or string.find(message, "Плащ") ~= nil
-    or string.find(message, "ПЛАЩ") ~= nil
-    and string.find(message, "шаги") == nil        
+    local text = string.lower(message)
+
+    local isCloth = string.find(text, "освященн") ~= nil
+    or string.find(text, "плащ") ~= nil
+    and string.find(text, "шаги") == nil        
         
-    local isPvpCloth = string.find(message, "Ткане") ~= nil  
-    and string.find(message, "бойца") ~= nil
+    local isPvpCloth = string.find(text, "ткане") ~= nil  
+    and string.find(text, "бойца") ~= nil
         
-    local isUncrafted = string.find(message, "мундир") ~= nil
-    or string.find(message, "одеяние") ~= nil
-    or string.find(message, "поножи") ~= nil
+    local isUncrafted = string.find(text, "мундир") ~= nil
+    or string.find(text, "одеяние") ~= nil
+    or string.find(text, "поножи") ~= nil
+    
+    return (isCloth or isPvpCloth) and isUncrafted == false
+    
+end
+
+function LidskiyCraft.IsCloth(message)    
+    
+    local text = string.lower(message)
+
+    local isCloth = string.find(text, "освященн") ~= nil
+    or string.find(text, "плащ") ~= nil
+    and string.find(text, "шаги") == nil        
+        
+    local isPvpCloth = string.find(text, "ткане") ~= nil  
+    and string.find(text, "бойца") ~= nil
+        
+    local isUncrafted = string.find(text, "мундир") ~= nil
+    or string.find(text, "одеяние") ~= nil
+    or string.find(text, "поножи") ~= nil
     
     return (isCloth or isPvpCloth) and isUncrafted == false
     
@@ -296,26 +380,55 @@ end
 
 function LidskiyCraft.IsStaff(message)    
     
-	local isStaff = string.find(message, "Аккуратная трость бродяги") ~= nil
-    or string.find(message, "Ограничивающий жезл бродяги") ~= nil
-    or string.find(message, "Факел бродяги") ~= nil
-    or string.find(message, "осох") ~= nil
-    or string.find(message, "акел") ~= nil
+    local text = string.lower(message)
+
+	local isStaff = string.find(text, "аккуратная трость бродяги") ~= nil
+    or string.find(text, "ограничивающий жезл бродяги") ~= nil
+    or string.find(text, "факел бродяги") ~= nil
+    or string.find(text, "посох") ~= nil
+    or string.find(text, "факел") ~= nil
+    or string.find(text, "оффхенд") ~= nil
         
-    local isPvpStaff = string.find(message, "Посох алгарийского бойца") ~= nil
-    or string.find(message, "Столп алгарийского бойца") ~= nil
-    or string.find(message, "Фонарь алгарийского бойца") ~= nil
+    local isPvpStaff = string.find(text, "посох алгарийского бойца") ~= nil
+    or string.find(text, "столп алгарийского бойца") ~= nil
+    or string.find(text, "фонарь алгарийского бойца") ~= nil
 
     return (isStaff or isPvpStaff)
 end
 
 function LidskiyCraft.IsInstrument(message)    
-    
-    local isInstrument = string.find(message, "Кирка ремесленника") ~= nil
-    or string.find(message, "Кузнечный молот ремесленника") ~= nil
-    or string.find(message, "Нож ремесленника для снятия шкур") ~= nil
 
-    return isInstrument
+	local text = string.lower(message)
+    
+    local isInstrument = string.find(text, "кирка ремесленника") ~= nil
+    or string.find(text, "серп ремесленника") ~= nil
+    or string.find(text, "кузнечный молот ремесленника") ~= nil
+    or string.find(text, "нож ремесленника для снятия шкур") ~= nil
+	or string.find(text, "набор кузнеца") ~= nil
+	or string.find(text, "кирк") ~= nil
+
+    return (isInstrument)
+    
+end 
+
+function LidskiyCraft.IsTraktat(message)    
+    
+    local text = string.lower(message)
+
+    local isTraktat = string.find(text, "трактат") ~= nil
+
+    return isTraktat
+    
+end 
+
+function LidskiyCraft.IsJewerly(message)    
+    
+    local text = string.lower(message)
+
+    local isJewerly = string.find(text, "кольцо мастерства земельников") ~= nil
+    or string.find(text, "печатка алгарийского бойца") ~= nil
+
+    return isJewerly
     
 end 
 
@@ -376,125 +489,128 @@ function LidskiyCraft.Is590(message)
     return string.find(message, "590") ~= nil    
 end
 
-function LidskiyCraft.IsInSearch(message)    
-    
-    local isInSearch = string.find(message, "ищ") ~= nil
-    or string.find(message, "Ищ") ~= nil
-    or string.find(message, "ИЩ") ~= nil
-    or string.find(message, "лф") ~= nil
-    or string.find(message, "lf") ~= nil
-    or string.find(message, "LF") ~= nil
-    or string.find(message, "уплю") ~= nil
-    or string.find(message, "КУПЛЮ") ~= nil
-    or string.find(message, "зака") ~= nil
-    or string.find(message, "ЗАКА") ~= nil
-    or string.find(message, "Сделает") ~= nil
-    or string.find(message, "сделает") ~= nil
-    or string.find(message, "СДЕЛАЕТ") ~= nil
-    or string.find(message, "Сделать") ~= nil
-    or string.find(message, "сделать") ~= nil
-    or string.find(message, "СДЕЛАТЬ") ~= nil
-    or string.find(message, "нид") ~= nil
-    or string.find(message, "НИД") ~= nil  
-    or string.find(message, "КТО") ~= nil  
-    or string.find(message, "кто") ~= nil  
-    or string.find(message, "Кто") ~= nil
-    or string.find(message, "Скрафтит") ~= nil  
-    or string.find(message, "скрафтит") ~= nil   
-	or string.find(message, "СКРАФТИТ") ~= nil  
+function LidskiyCraft.IsMessageUsefull(message)
 
-    return isInSearch
+	local text = string.lower(message)
     
+    local isInSearch = string.find(text, "ищ") ~= nil
+    or string.find(text, "лф") ~= nil
+    or string.find(text, "lf") ~= nil
+    or string.find(text, "куплю") ~= nil
+    or string.find(text, "зака") ~= nil
+    or string.find(text, "сделает") ~= nil
+    or string.find(text, "сделать") ~= nil
+    or string.find(text, "нид") ~= nil
+    or string.find(text, "кто") ~= nil  
+    or string.find(text, "скрафтит") ~= nil   
+	or string.find(text, "каз алгара") ~= nil   
+
+    local isSpam = string.find(text, "ансурек") ~= nil 
+    or string.find(text, "дворец") ~= nil
+    or string.find(text, "прокачк") ~= nil
+    or string.find(text, "лвлинг") ~= nil
+    or string.find(text, "оденем") ~= nil
+        
+    local isCrafter = (string.find(text, "портняжное дело") ~= nil
+    or string.find(text, "начертание") ~= nil
+    or string.find(text, "кожевничество") ~= nil
+    or string.find(text, "кузнечное дело") ~= nil
+    or string.find(text, "инженерное дело") ~= nil
+    or string.find(text, "ювелирное дело") ~= nil
+    or string.find(text, "наложение чар") ~= nil)
+
+    or string.find(text, "делаю") ~= nil
+    or string.find(text, "крафчу") ~= nil
+    or string.find(text, "всех") ~= nil
+    or string.find(text, "колец") ~= nil
+    or string.find(text, "оружее") ~= nil
+    or string.find(text, "инструментов") ~= nil  
+        
+    local isOther = string.find(text, "ключ") ~= nil
+    or string.find(text, "кей") ~= nil
+    or string.find(text, "кх") ~= nil 
+    or string.find(text, "гильди") ~= nil
+    or string.find(text, "статик") ~= nil        
+    or string.find(text, "афк") ~= nil
+    or string.find(text, "зеленк") ~= nil
+    or string.find(text, "-70") ~= nil
+    or string.find(text, "-80") ~= nil
+    or string.find(text, "костюм") ~= nil
+    or string.find(text, "герб") ~= nil
+    or string.find(text, "хил") ~= nil
+    or string.find(text, "дд") ~= nil
+    or string.find(text, "танк") ~= nil  
+    or string.find(text, "изначальн") ~= nil 
+    or string.find(text, "освоение") ~= nil        
+    or string.find(text, "tww") ~= nil
+    or string.find(text, "гер") ~= nil  
+    or string.find(text, "продам") ~= nil
+	----      
+    
+    return (isInSearch and not isSpam and not isCrafter and not isOther)    
 end
 
-function LidskiyCraft.IsMessageShallBeForwarded(message)    
-    
-    local isSpam = string.find(message, "нсурек") ~= nil 
-    or string.find(message, "ворец") ~= nil
-    or string.find(message, "рокач") ~= nil
-    or string.find(message, "влинг") ~= nil
-    or string.find(message, "оденем") ~= nil
-        
-    local isCrafter = (string.find(message, "Портняжное дело") ~= nil
-    or string.find(message, "Начертание") ~= nil
-    or string.find(message, "Кожевничество") ~= nil
-    or string.find(message, "Кузнечное дело") ~= nil
-    or string.find(message, "Инженерное дело") ~= nil
-    or string.find(message, "Ювелирное дело") ~= nil
-    or string.find(message, "Наложение чар") ~= nil)
-    and string.find(message, "Каз Алгара") == nil      
-        
-    local isOther = string.find(message, "ключ") ~= nil
-    or string.find(message, "кей") ~= nil
-    or string.find(message, "кх") ~= nil 
-    or string.find(message, "КХ") ~= nil 
-    or string.find(message, "ильди") ~= nil
-    or string.find(message, "статик") ~= nil        
-    or string.find(message, "афк") ~= nil
-    or string.find(message, "АФК") ~= nil
-    or string.find(message, "еленк") ~= nil
-    or string.find(message, "-70") ~= nil
-    or string.find(message, "-80") ~= nil
-    or string.find(message, "Костюм") ~= nil
-    or string.find(message, "герб") ~= nil
-    or string.find(message, "Герб") ~= nil
-    or string.find(message, "ГЕРБ") ~= nil
-    or string.find(message, "рактат") ~= nil
-    or string.find(message, "хил") ~= nil
-    or string.find(message, "дд") ~= nil
-    or string.find(message, "танк") ~= nil  
-    or string.find(message, "изначальн") ~= nil 
-    or string.find(message, "освоение") ~= nil        
-    or string.find(message, "TWW") ~= nil
-    or string.find(message, "tww") ~= nil
-    or string.find(message, "гер") ~= nil  
-    or string.find(message, "родам") ~= nil
-    or string.find(message, "ПРОДАМ") ~= nil     
-    or string.find(message, "татик") ~= nil
-	----
-    or string.find(message, "елаю") ~= nil
-    or string.find(message, "ДЕЛАЮ") ~= nil
-    or string.find(message, "рафчу") ~= nil
-    or string.find(message, "КРАФЧУ") ~= nil
-    or string.find(message, "всех") ~= nil
-    or string.find(message, "Всех") ~= nil
-    or string.find(message, "ВСЕ") ~= nil
-    or string.find(message, "олец") ~= nil
-    or string.find(message, "ружее") ~= nil
-    or string.find(message, "619/636") ~= nil
-    or string.find(message, "нструменто") ~= nil    
-    or string.find(message, "некли") ~= nil       
-    
-    return (not isSpam and not isCrafter and not isOther)
-    
-end
-
-function LidskiyCraft.SendCraftMessage(price, target, character)  
-    SendChatMessage("ку! " .. price .. ". t3 реги, заказ на " .. character, "WHISPER", nil, target)
-    PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
+function LidskiyCraft.SendCraftMessage(price, target, character, targetText) 
+    local text = "ку! " .. price .. ". t3 реги, заказ на " .. character
+    LidskiyCraft.SendMessage(target, text, targetText)
 end 
 
-function LidskiyCraft.SendCraftMessageFree(target, character)  
-    SendChatMessage("ку! скрафчу за вознаграждение на твое усмотрение :) заказ на " .. character, "WHISPER", nil, target)
-    PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
+function LidskiyCraft.SendCraftMessageFree(target, character, targetText)
+    local text = "ку! скрафчу за вознаграждение на твое усмотрение :) заказ на " .. character
+    LidskiyCraft.SendMessage(target, text, targetText)
 end
 
-function LidskiyCraft.SendVladCraftMessage(price, target, character)  
-    SendChatMessage("Привет :) Крафчу за " .. price .. ". t3 реги, т3 реги для т5. Заказ на " .. character, "WHISPER", nil, target)
-    PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
+function LidskiyCraft.SendTraktatCraftMessage(price, target, character, targetText)
+    local text = "ку! крафчу все тракты по ".. price.. " за штуку, заказ на " .. character
+    LidskiyCraft.SendMessage(target, text, targetText)
+end
+
+function LidskiyCraft.SendVladCraftMessage(price, target, character, targetText)
+    local text = "Привет :) Крафчу за " .. price .. ". t3 реги, т3 реги для т5. Заказ на " .. character
+    LidskiyCraft.SendMessage(target, text, targetText)
 end 
 
-function LidskiyCraft.SendVladCraftMessageFree(target, character)  
-    SendChatMessage("Привет :) Крафчу за сколько не жалко, т3 реги для т5. Заказ на " .. character, "WHISPER", nil, target)
+function LidskiyCraft.SendVladCraftMessageFree(target, character, targetText)
+    local text = "Привет :) Крафчу за сколько не жалко, т3 реги для т5. Заказ на " .. character
+    LidskiyCraft.SendMessage(target, text, targetText)
+end
+
+function LidskiyCraft.SendMessage(target, text, targetText)
+	C_Timer.After(1, function()
+	print(target .. ": " .. targetText)
+	SendChatMessage(text, "WHISPER", nil, target)
     PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
+	end)    
+end
+
+local waitTable = {}
+local waitFrame = nil
+
+function LidskiyCraft.RunWithDelay(delay, func, ...)
+  if(type(delay) ~= "number" or type(func) ~= "function") then
+    return false
+  end
+  if not waitFrame then
+    waitFrame = CreateFrame("Frame", nil, UIParent)
+    waitFrame:SetScript("OnUpdate", function (self, elapse)
+      for i = 1, #waitTable do
+        local waitRecord = tremove(waitTable, i)
+        local d = tremove(waitRecord, 1)
+        local f = tremove(waitRecord, 1)
+        local p = tremove(waitRecord, 1)
+        if d > elapse then
+          tinsert(waitTable, i, {d - elapse, f, p})
+          i = i + 1
+        else
+          count = count - 1
+          f(unpack(p))
+        end
+      end
+    end)
+  end
+  tinsert(waitTable, {delay, func, {...}})
+  return true
 end  
-
-function LidskiyCraft.TryToForwardMessage(sender, message)
-	if (LidskiyCraft.IsMessageShallBeForwarded(message)) then   
-    	SendChatMessage(sender .. " -> " .. message , "OFFICER")
-    end
-end 
-
 
 -------------------------------------------------------------------
 
@@ -506,3 +622,5 @@ LidskiyCraft.EventFrame:RegisterEvent("ADDON_LOADED");
 LidskiyCraft.EventFrame:RegisterEvent("PLAYER_LOGIN");
 LidskiyCraft.EventFrame:RegisterEvent("PLAYER_LOGOUT");
 LidskiyCraft.EventFrame:RegisterEvent("CHAT_MSG_CHANNEL");
+LidskiyCraft.EventFrame:RegisterEvent("CHAT_MSG_ADDON");
+C_ChatInfo.RegisterAddonMessagePrefix(prefix)
