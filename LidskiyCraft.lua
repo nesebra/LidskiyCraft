@@ -253,7 +253,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
             	if (Is636) then
                 	LidskiyCraft.SendCraftMessage("6k", target, "Пыткакалом", text)
                 else
-                	LidskiyCraft.SendCraftMessage("4.5k", target, "Пыткакалом", text)
+                	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
             	end
         	end
 
@@ -410,7 +410,6 @@ function LidskiyCraft.IsInstrument(message)
     or string.find(text, "кузнечный молот ремесленника") ~= nil
     or string.find(text, "нож ремесленника для снятия шкур") ~= nil
 	or string.find(text, "набор кузнеца") ~= nil
-	or string.find(text, "кирк") ~= nil
     and string.find(text, "бойца") == nil     
 
     return (isInstrument)
