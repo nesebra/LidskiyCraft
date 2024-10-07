@@ -43,7 +43,7 @@ local settings = {
         settingKey = "isCraftsForBeerVlad"
     },
     {
-        settingText = "Блэтвлэд (оружее)",
+        settingText = "Блэтвлэд (кузнечка + инжа)",
         settingKey = "isCraftsForBlyatVlad"
     }
 }
@@ -238,6 +238,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
         local isInstrument = LidskiyCraft.IsInstrument(text)
         local isLeather = LidskiyCraft.IsLeather(text)
         local isWeapons = LidskiyCraft.IsWeapons(text)
+        local isEngineering = LidskiyCraft.IsEngineering(text)
         local isJewerly = LidskiyCraft.IsJewerly(text)
         local isTraktat = LidskiyCraft.IsTraktat(text)
 
@@ -258,9 +259,9 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
         	if (isStaff) then
             	if (Is636) then
-            		LidskiyCraft.SendCraftMessage("7k", target, "Пыткакалом", text)
+            		LidskiyCraft.SendCraftMessage("6k", target, "Пыткакалом", text)
                 else
-                	LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
+                	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
             	end
         	end
 
@@ -294,7 +295,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
 
 			if (isLeather) then
-            	LidskiyCraft.SendVladCraftMessage("5k", target, "Пивнойвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage("7k", target, "Пивнойвлэд", text)
             end	
 
 		end
@@ -302,7 +303,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForBlyatVlad"]) then
 
 			if (isWeapons) then
-            	LidskiyCraft.SendVladCraftMessageFree(target, "Блэтвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage("5k", target, "Блэтвлэд", text)
+            end	
+
+            if (isEngineering) then
+            	LidskiyCraft.SendVladCraftMessage("12k", target, "Блэтвлэд", text)
             end	
 
 		end        
@@ -406,6 +411,7 @@ function LidskiyCraft.IsInstrument(message)
     or string.find(text, "нож ремесленника для снятия шкур") ~= nil
 	or string.find(text, "набор кузнеца") ~= nil
 	or string.find(text, "кирк") ~= nil
+    and string.find(text, "бойца") == nil     
 
     return (isInstrument)
     
@@ -451,7 +457,7 @@ function LidskiyCraft.IsLeather(message)
 
     return isLeather 
 
-end 
+end
 
 function LidskiyCraft.IsWeapons(message)    
     
@@ -471,7 +477,25 @@ function LidskiyCraft.IsWeapons(message)
 
     return isWeapons 
        
-end 
+end
+
+function LidskiyCraft.IsEngineering(message)    
+    
+    local isEngineering = string.find(message, "ПИФ-П4Ф") ~= nil
+    or string.find(message, "Взрывные наручи") ~= nil
+    or string.find(message, "Выкованный навеки большой топор") ~= nil
+    or string.find(message, "Дышащие тяжелые наручи") ~= nil
+    or string.find(message, "Жужжащие напульсники") ~= nil
+    or string.find(message, "Лязгающие манжеты") ~= nil 
+    or string.find(message, "Ружье алгарийского бойца") ~= nil 
+    or string.find(message, "Тканевые наручи алгарийского бойца") ~= nil 
+    or string.find(message, "Кожаные наручи алгарийского бойца") ~= nil 
+    or string.find(message, "Латные наручи алгарийского бойца") ~= nil 
+    or string.find(message, "Кольчужные наручи алгарийского бойца") ~= nil 
+
+    return isEngineering 
+       
+end  
 
 function LidskiyCraft.Is636(message) 	
     return string.find(message, "636") ~= nil    
@@ -501,7 +525,6 @@ function LidskiyCraft.IsMessageUsefull(message)
     or string.find(text, "сделает") ~= nil
     or string.find(text, "сделать") ~= nil
     or string.find(text, "нид") ~= nil
-    or string.find(text, "кто") ~= nil  
     or string.find(text, "скрафтит") ~= nil   
 	or string.find(text, "каз алгара") ~= nil   
 
@@ -555,11 +578,6 @@ function LidskiyCraft.SendCraftMessage(price, target, character, targetText)
     LidskiyCraft.SendMessage(target, text, targetText)
 end 
 
-function LidskiyCraft.SendCraftMessageFree(target, character, targetText)
-    local text = "ку! скрафчу за вознаграждение на твое усмотрение :) заказ на " .. character
-    LidskiyCraft.SendMessage(target, text, targetText)
-end
-
 function LidskiyCraft.SendTraktatCraftMessage(price, target, character, targetText)
     local text = "ку! крафчу все тракты по ".. price.. " за штуку, заказ на " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
@@ -570,13 +588,8 @@ function LidskiyCraft.SendVladCraftMessage(price, target, character, targetText)
     LidskiyCraft.SendMessage(target, text, targetText)
 end 
 
-function LidskiyCraft.SendVladCraftMessageFree(target, character, targetText)
-    local text = "Привет :) Крафчу за сколько не жалко, т3 реги для т5. Заказ на " .. character
-    LidskiyCraft.SendMessage(target, text, targetText)
-end
-
 function LidskiyCraft.SendMessage(target, text, targetText)
-	C_Timer.After(1, function()
+	C_Timer.After(2, function()
 	print(target .. ": " .. targetText)
 	SendChatMessage(text, "WHISPER", nil, target)
     PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
