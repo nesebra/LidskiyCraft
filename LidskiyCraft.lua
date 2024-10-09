@@ -240,6 +240,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
         local isWeapons = LidskiyCraft.IsWeapons(text)
         local isEngineering = LidskiyCraft.IsEngineering(text)
         local isJewerly = LidskiyCraft.IsJewerly(text)
+        local isPvPJewerly = LidskiyCraft.IsPvPJewerly(text)
         local isTraktat = LidskiyCraft.IsTraktat(text)
 
         local Is590 = LidskiyCraft.Is590(text)
@@ -287,7 +288,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isRingsCraftsForDaddy"]) then
 
 			if (isJewerly) then
-            	LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
+            end	
+
+            if (isPvPJewerly) then
+            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
             end	
         end            
 
@@ -412,18 +417,25 @@ function LidskiyCraft.IsJewerly(message)
     local text = string.lower(message)
 
     local isJewerly = string.find(text, "кольцо мастерства земельников") ~= nil
-    or string.find(text, "печатка алгарийского бойца") ~= nil
-
     or string.find(text, "амулет мастерства земельников") ~= nil
     or string.find(text, "медальон с растрескавшимися самоцветами") ~= nil
-    or string.find(text, "амулет алгарийского бойца") ~= nil
-
-    or string.find(text, "пвп колец") ~= nil
-    or string.find(text, "пвп кольца") ~= nil
 
     return isJewerly
     
-end 
+end
+
+function LidskiyCraft.IsPvPJewerly(message)    
+    
+    local text = string.lower(message)
+
+    local isPvPJewerly = string.find(text, "печатка алгарийского бойца") ~= nil
+    or string.find(text, "амулет алгарийского бойца") ~= nil
+    or string.find(text, "пвп колец") ~= nil
+    or string.find(text, "пвп кольца") ~= nil
+
+    return isPvPJewerly
+    
+end  
 
 function LidskiyCraft.IsLeather(message)    
     
