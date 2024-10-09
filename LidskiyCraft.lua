@@ -299,8 +299,6 @@ function LidskiyCraft.AnalyzeMessage(target, text)
             end	
         end            
 
-
-
 		if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
 
 			if (isLeather) then
