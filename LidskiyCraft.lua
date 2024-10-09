@@ -35,7 +35,7 @@ local settings = {
         settingKey = "isInstrumentsCraftsForDaddy"
     },
     {
-        settingText = "Есдэдди (кольца)",
+        settingText = "Есдэдди (бижа)",
         settingKey = "isRingsCraftsForDaddy"
     },
     {
@@ -43,7 +43,7 @@ local settings = {
         settingKey = "isCraftsForBeerVlad"
     },
     {
-        settingText = "Блэтвлэд (кузнечка + инжа)",
+        settingText = "Блэтвлэд (кузнечное + инженерное)",
         settingKey = "isCraftsForBlyatVlad"
     }
 }
@@ -418,6 +418,9 @@ function LidskiyCraft.IsJewerly(message)
     or string.find(text, "медальон с растрескавшимися самоцветами") ~= nil
     or string.find(text, "амулет алгарийского бойца") ~= nil
 
+    or string.find(text, "пвп колец") ~= nil
+    or string.find(text, "пвп кольца") ~= nil
+
     return isJewerly
     
 end 
@@ -467,7 +470,6 @@ function LidskiyCraft.IsEngineering(message)
     
     local isEngineering = string.find(message, "ПИФ-П4Ф") ~= nil
     or string.find(message, "Взрывные наручи") ~= nil
-    or string.find(message, "Выкованный навеки большой топор") ~= nil
     or string.find(message, "Дышащие тяжелые наручи") ~= nil
     or string.find(message, "Жужжащие напульсники") ~= nil
     or string.find(message, "Лязгающие манжеты") ~= nil 
