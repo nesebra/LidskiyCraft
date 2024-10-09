@@ -364,25 +364,6 @@ function LidskiyCraft.IsCloth(message)
     
 end
 
-function LidskiyCraft.IsCloth(message)    
-    
-    local text = string.lower(message)
-
-    local isCloth = string.find(text, "освященн") ~= nil
-    or string.find(text, "плащ") ~= nil
-    and string.find(text, "шаги") == nil        
-        
-    local isPvpCloth = string.find(text, "ткане") ~= nil  
-    and string.find(text, "бойца") ~= nil
-        
-    local isUncrafted = string.find(text, "мундир") ~= nil
-    or string.find(text, "одеяние") ~= nil
-    or string.find(text, "поножи") ~= nil
-    
-    return (isCloth or isPvpCloth) and isUncrafted == false
-    
-end
-
 function LidskiyCraft.IsStaff(message)    
     
     local text = string.lower(message)
@@ -432,6 +413,10 @@ function LidskiyCraft.IsJewerly(message)
 
     local isJewerly = string.find(text, "кольцо мастерства земельников") ~= nil
     or string.find(text, "печатка алгарийского бойца") ~= nil
+
+    or string.find(text, "амулет мастерства земельников") ~= nil
+    or string.find(text, "медальон с растрескавшимися самоцветами") ~= nil
+    or string.find(text, "амулет алгарийского бойца") ~= nil
 
     return isJewerly
     
