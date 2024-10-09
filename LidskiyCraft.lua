@@ -281,18 +281,21 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 			if (isInstrument) then
                 LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
             end
-	
 
 		end
 
 		if (LidskiyPrefs.settingsKeys["isRingsCraftsForDaddy"]) then
 
 			if (isJewerly) then
-            	LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
-            end	
+            	if (Is636) then
+                	LidskiyCraft.SendCraftMessage("5k", target, "Есдэдди", text)
+                else
+                	LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
+            	end
+        	end
 
             if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("2.5k", target, "Есдэдди", text)
             end	
         end            
 
@@ -308,7 +311,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForBlyatVlad"]) then
 
 			if (isWeapons) then
-            	LidskiyCraft.SendVladCraftMessage("5k", target, "Блэтвлэд", text)
+				if (Is636) then
+                	LidskiyCraft.SendVladCraftMessage("7k", target, "Блэтвлэд", text)
+                else
+                	LidskiyCraft.SendVladCraftMessage("5k", target, "Блэтвлэд", text)
+            	end            	
             end	
 
             if (isEngineering) then
