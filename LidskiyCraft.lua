@@ -589,7 +589,7 @@ function LidskiyCraft.SendTraktatCraftMessage(price, target, character, targetTe
 end
 
 function LidskiyCraft.SendVladCraftMessage(price, target, character, targetText)
-    local text = "Привет :) Крафчу за " .. price .. ". t3 реги, т3 реги для т5. Заказ на " .. character
+    local text = "Привет :) Крафчу за " .. price .. ". т3 реги для т5. Заказ на " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
 end 
 
