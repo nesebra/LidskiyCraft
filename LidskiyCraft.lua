@@ -295,7 +295,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
         	end
 
             if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("2.5k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
             end	
         end            
 
@@ -402,7 +402,8 @@ function LidskiyCraft.IsInstrument(message)
     or string.find(text, "кузнечный молот ремесленника") ~= nil
     or string.find(text, "нож ремесленника для снятия шкур") ~= nil
 	or string.find(text, "набор кузнеца") ~= nil
-    and string.find(text, "бойца") == nil     
+	or string.find(text, "нож кожевника") ~= nil
+    and string.find(text, "бойца") == nil
 
     return (isInstrument)
     
