@@ -234,6 +234,7 @@ end
 function LidskiyCraft.AnalyzeMessage(target, text)
 
         local isCloth = LidskiyCraft.IsCloth(text)
+        local isInstrumentCloth = LidskiyCraft.IsInstrumentCloth(text)
         local isStaff = LidskiyCraft.IsStaff(text)
         local isInstrument = LidskiyCraft.IsInstrument(text)
         local isLeather = LidskiyCraft.IsLeather(text)
@@ -252,7 +253,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
             if (isCloth) then
             	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("6k", target, "Пыткакалом", text)
+                	LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
                 else
                 	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
             	end
@@ -260,11 +261,15 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
         	if (isStaff) then
             	if (Is636) then
-            		LidskiyCraft.SendCraftMessage("6k", target, "Пыткакалом", text)
+            		LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
                 else
                 	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
             	end
         	end
+
+            if (isInstrumentCloth) then               
+                LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
+            end
 
 		end
 
@@ -279,7 +284,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isInstrumentsCraftsForDaddy"]) then
 
 			if (isInstrument) then
-                LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
+                LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
             end
 
 		end
@@ -288,14 +293,14 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
 			if (isJewerly) then
             	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("5k", target, "Есдэдди", text)
+                	LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
                 else
                 	LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
             	end
         	end
 
             if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("2.5k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
             end	
         end            
 
@@ -375,6 +380,18 @@ function LidskiyCraft.IsCloth(message)
     
 end
 
+function LidskiyCraft.IsInstrumentCloth(message)    
+    
+    local text = string.lower(message)
+
+    local isInstrumentCloth = string.find(text, "Шляпа садовника-ремесленника") ~= nil
+    or string.find(text, "Рыбацкая шляпа ремесленника") ~= nil
+    or string.find(text, "Шляпа зачаровывателя-ремесленника") ~= nil
+    
+    return (isInstrumentCloth)
+    
+end
+
 function LidskiyCraft.IsStaff(message)    
     
     local text = string.lower(message)
@@ -402,7 +419,8 @@ function LidskiyCraft.IsInstrument(message)
     or string.find(text, "кузнечный молот ремесленника") ~= nil
     or string.find(text, "нож ремесленника для снятия шкур") ~= nil
 	or string.find(text, "набор кузнеца") ~= nil
-    and string.find(text, "бойца") == nil     
+	or string.find(text, "нож кожевника") ~= nil
+    and string.find(text, "бойца") == nil
 
     return (isInstrument)
     
