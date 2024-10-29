@@ -45,6 +45,10 @@ local settings = {
     {
         settingText = "Блэтвлэд (кузнечное + инженерное)",
         settingKey = "isCraftsForBlyatVlad"
+    },
+    {
+        settingText = "Сообщить, что перезайду v.0.1 :)",
+        settingKey = "isNeedToRelogin"
     }
 }
 
@@ -66,7 +70,7 @@ function LidskiyCraft.CreateUIFrame()
 
 	-- create the UI frame
 	LidskiyCraft.UIFrame = CreateFrame("Frame",nil,UIParent,"BasicFrameTemplateWithInset");
-	LidskiyCraft.UIFrame:SetSize(270,280);
+	LidskiyCraft.UIFrame:SetSize(270,310);
 	LidskiyCraft.UIFrame:SetPoint(_G.LidskiyPrefs.frameRef, _G.LidskiyPrefs.frameX, _G.LidskiyPrefs.frameY);
 	LidskiyCraft.UIFrame.TitleBg:SetHeight(30);
 	LidskiyCraft.UIFrame.title = LidskiyCraft.UIFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
@@ -253,17 +257,17 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
             if (isCloth) then
             	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
-                else
                 	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
+                else
+                	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
             	end
         	end
 
         	if (isStaff) then
             	if (Is636) then
-            		LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
+            		LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
                 else
-                	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
+                	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
             	end
         	end
 
@@ -598,6 +602,13 @@ end
 function LidskiyCraft.SendCraftMessage(price, target, character, targetText) 
     local text = "ку! " .. price .. ". t3 реги, заказ на " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
+
+    local player = UnitName("player")
+
+    if (player ~= character and LidskiyPrefs.settingsKeys["isNeedToRelogin"]) then
+        LidskiyCraft.SendReloginMessage(target)
+    end
+
 end 
 
 function LidskiyCraft.SendTraktatCraftMessage(price, target, character, targetText)
@@ -608,7 +619,16 @@ end
 function LidskiyCraft.SendVladCraftMessage(price, target, character, targetText)
     local text = "Привет :) Крафчу за " .. price .. ". т3 реги для т5. Заказ на " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
-end 
+end
+
+function LidskiyCraft.SendReloginMessage(target)
+    local text = "если разместишь заказ, то маякни, я перезайду"
+
+    C_Timer.After(3, function()
+    SendChatMessage(text, "WHISPER", nil, target)
+    PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
+    end) 
+end  
 
 function LidskiyCraft.SendMessage(target, text, targetText)
 	C_Timer.After(2, function()
