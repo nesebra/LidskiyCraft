@@ -644,7 +644,6 @@ function LidskiyCraft.SendReloginMessage(target)
 
     C_Timer.After(3, function()
     SendChatMessage(text, "WHISPER", nil, target)
-    PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
     end) 
 end  
 
