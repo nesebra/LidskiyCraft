@@ -311,7 +311,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
 
 			if (isLeather) then
-            	LidskiyCraft.SendVladCraftMessage("7k", target, "Пивнойвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage("5k", target, "Пивнойвлэд", text)
             end	
 
 		end
@@ -320,14 +320,14 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
 			if (isWeapons) then
 				if (Is636) then
-                	LidskiyCraft.SendVladCraftMessage("7k", target, "Блэтвлэд", text)
+                	LidskiyCraft.SendVladCraftMessage("4k", target, "Блэтвлэд", text)
                 else
-                	LidskiyCraft.SendVladCraftMessage("5k", target, "Блэтвлэд", text)
+                	LidskiyCraft.SendVladCraftMessage("3k", target, "Блэтвлэд", text)
             	end            	
             end	
 
             if (isEngineering) then
-            	LidskiyCraft.SendVladCraftMessage("12k", target, "Блэтвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage("3k", target, "Блэтвлэд", text)
             end	
 
 		end        
@@ -481,6 +481,13 @@ function LidskiyCraft.IsLeather(message)
     or string.find(message, "Кожаные сапоги алгарийского бойца") ~= nil 
     or string.find(message, "Кожаный нагрудник алгарийского бойца") ~= nil 
     or string.find(message, "Кожаный пояс алгарийского бойца") ~= nil 
+    or string.find(message, "Заряженные рукавицы мастера-утилизатора") ~= nil 
+    or string.find(message, "Комбинезон аратийского кожевника") ~= nil 
+    or string.find(message, "Рюкзак каменного травника") ~= nil 
+    or string.find(message, "Фартук земельника") ~= nil 
+    or string.find(message, "Шляпа нерубского алхимика") ~= nil 
+    or string.find(message, "Рюкзак глубинного следопыта") ~= nil 
+    or string.find(message, "Шапка глубинного следопыта") ~= nil 
 
     return isLeather 
 
@@ -501,6 +508,10 @@ function LidskiyCraft.IsWeapons(message)
     or string.find(message, "Заряженный разбиватель шлемов") ~= nil 
     or string.find(message, "Заряженный рассекатель") ~= nil 
     or string.find(message, "Заряженный рунический топор") ~= nil 
+    or string.find(message, "Выкованный навеки защитник") ~= nil 
+    or string.find(message, "Бастион Беледар") ~= nil 
+    or string.find(message, "Заряженный заклинатель") ~= nil 
+    or string.find(message, "Вытягивающий стилет") ~= nil 
 
     return isWeapons 
        
@@ -508,7 +519,7 @@ end
 
 function LidskiyCraft.IsEngineering(message)    
     
-    local isEngineering = string.find(message, "ПИФ-П4Ф") ~= nil
+    local isEngineering = string.find(message, "ПИФ") ~= nil
     or string.find(message, "Взрывные наручи") ~= nil
     or string.find(message, "Дышащие тяжелые наручи") ~= nil
     or string.find(message, "Жужжащие напульсники") ~= nil
@@ -518,6 +529,13 @@ function LidskiyCraft.IsEngineering(message)
     or string.find(message, "Кожаные наручи алгарийского бойца") ~= nil 
     or string.find(message, "Латные наручи алгарийского бойца") ~= nil 
     or string.find(message, "Кольчужные наручи алгарийского бойца") ~= nil 
+    or string.find(message, "Акиритовая каска шахтера") ~= nil
+    or string.find(message, "Акиритовое сокровище шахтера") ~= nil
+    or string.find(message, "Акиритовые зажимы резчика") ~= nil
+    or string.find(message, "Акиритовый друг рыболова") ~= nil
+    or string.find(message, "Акиритовый проектор мозговых волн") ~= nil
+    or string.find(message, "Заряженный акиритом самофланж") ~= nil
+    or string.find(message, "Пружинные портновские ножницы") ~= nil
 
     return isEngineering 
        
