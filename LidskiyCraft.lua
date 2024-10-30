@@ -488,6 +488,8 @@ function LidskiyCraft.IsLeather(message)
     or string.find(message, "Шляпа нерубского алхимика") ~= nil 
     or string.find(message, "Рюкзак глубинного следопыта") ~= nil 
     or string.find(message, "Шапка глубинного следопыта") ~= nil 
+    or string.find(message, "Рунический жезл из нуль") ~= nil 
+    or string.find(message, "Скипетр сияющей магии") ~= nil 
 
     return isLeather 
 
@@ -512,6 +514,7 @@ function LidskiyCraft.IsWeapons(message)
     or string.find(message, "Бастион Беледар") ~= nil 
     or string.find(message, "Заряженный заклинатель") ~= nil 
     or string.find(message, "Вытягивающий стилет") ~= nil 
+    or string.find(message, "Выкованные навеки тяжелые наручи") ~= nil 
 
     return isWeapons 
        
