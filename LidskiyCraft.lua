@@ -256,19 +256,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
 
             if (isCloth) then
-            	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
-                else
-                	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
-            	end
+            	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
         	end
 
         	if (isStaff) then
-            	if (Is636) then
-            		LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
-                else
-                	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
-            	end
+            	LidskiyCraft.SendCraftMessage("2k", target, "Пыткакалом", text)
         	end
 
             if (isInstrumentCloth) then               
@@ -424,6 +416,7 @@ function LidskiyCraft.IsInstrument(message)
     or string.find(text, "нож ремесленника для снятия шкур") ~= nil
 	or string.find(text, "набор кузнеца") ~= nil
 	or string.find(text, "нож кожевника") ~= nil
+    or string.find(text, "кристалл зачарователя") ~= nil
     and string.find(text, "бойца") == nil
 
     return (isInstrument)
@@ -458,6 +451,7 @@ function LidskiyCraft.IsPvPJewerly(message)
 
     local isPvPJewerly = string.find(text, "печатка алгарийского бойца") ~= nil
     or string.find(text, "амулет алгарийского бойца") ~= nil
+    or string.find(text, "узы связи") ~= nil
     or string.find(text, "пвп колец") ~= nil
     or string.find(text, "пвп кольца") ~= nil
 
