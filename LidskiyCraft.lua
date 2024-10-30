@@ -259,13 +259,13 @@ function LidskiyCraft.AnalyzeMessage(target, text)
             	if (Is636) then
                 	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
                 else
-                	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
+                	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
             	end
         	end
 
         	if (isStaff) then
             	if (Is636) then
-            		LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
+            		LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
                 else
                 	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
             	end
@@ -388,9 +388,9 @@ function LidskiyCraft.IsInstrumentCloth(message)
     
     local text = string.lower(message)
 
-    local isInstrumentCloth = string.find(text, "Шляпа садовника-ремесленника") ~= nil
-    or string.find(text, "Рыбацкая шляпа ремесленника") ~= nil
-    or string.find(text, "Шляпа зачаровывателя-ремесленника") ~= nil
+    local isInstrumentCloth = string.find(text, "Шляпа садовника") ~= nil
+    or string.find(text, "Рыбацкая шляпа") ~= nil
+    or string.find(text, "Шляпа зачаровывателя") ~= nil
     
     return (isInstrumentCloth)
     
