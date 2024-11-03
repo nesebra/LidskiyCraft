@@ -272,7 +272,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isTractatCraftsForKal"]) then
 
 			if (isTraktat) then
-                LidskiyCraft.SendTraktatCraftMessage("250g", target, "Пыткакалом", text)
+                LidskiyCraft.SendTraktatCraftMessage("500g", target, "Пыткакалом", text)
             end        	
 				
 		end
@@ -441,6 +441,7 @@ function LidskiyCraft.IsJewerly(message)
     local isJewerly = string.find(text, "кольцо мастерства земельников") ~= nil
     or string.find(text, "амулет мастерства земельников") ~= nil
     or string.find(text, "медальон с растрескавшимися самоцветами") ~= nil
+    or string.find(text, "узы связи") ~= nil
 
     return isJewerly
     
@@ -452,7 +453,6 @@ function LidskiyCraft.IsPvPJewerly(message)
 
     local isPvPJewerly = string.find(text, "печатка алгарийского бойца") ~= nil
     or string.find(text, "амулет алгарийского бойца") ~= nil
-    or string.find(text, "узы связи") ~= nil
     or string.find(text, "пвп колец") ~= nil
     or string.find(text, "пвп кольца") ~= nil
 
@@ -628,7 +628,7 @@ function LidskiyCraft.SendCraftMessage(price, target, character, targetText)
 end 
 
 function LidskiyCraft.SendTraktatCraftMessage(price, target, character, targetText)
-    local text = "ку! крафчу все тракты по ".. price.. " за штуку, заказ на " .. character
+    local text = "ку! крафчу все тракты по ".. price.. " за штуку (25% перепроизводства, можно получить несколько трактатов), заказ на " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
 end
 
