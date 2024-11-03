@@ -380,9 +380,9 @@ function LidskiyCraft.IsInstrumentCloth(message)
     
     local text = string.lower(message)
 
-    local isInstrumentCloth = string.find(text, "Шляпа садовника") ~= nil
-    or string.find(text, "Рыбацкая шляпа") ~= nil
-    or string.find(text, "Шляпа зачаровывателя") ~= nil
+    local isInstrumentCloth = string.find(text, "шляпа садовника") ~= nil
+    or string.find(text, "рыбацкая шляпа") ~= nil
+    or string.find(text, "шляпа зачаровывателя") ~= nil
     
     return (isInstrumentCloth)
     
@@ -417,6 +417,7 @@ function LidskiyCraft.IsInstrument(message)
 	or string.find(text, "набор кузнеца") ~= nil
 	or string.find(text, "нож кожевника") ~= nil
     or string.find(text, "кристалл зачарователя") ~= nil
+    or string.find(text, "набор игл ремесленника") ~= nil
     and string.find(text, "бойца") == nil
 
     return (isInstrument)
