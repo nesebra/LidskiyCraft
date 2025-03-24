@@ -3,7 +3,10 @@
 ## Notes: Base for new WoW addons
 ## Author: nesebra
 ## Version: 1.0.0
-## Dependencies: 
 ## SavedVariablesPerCharacter: LidskiyPrefs
+
+Libs\LibStub\LibStub.lua
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\lib.xml
 
 LidskiyCraft.lua

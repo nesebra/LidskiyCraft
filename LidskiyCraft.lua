@@ -9,6 +9,10 @@ LidskiyCraft.default_options = {
 	hide = false,
 };
 
+local addonName = "LidskiyCraft"
+local LibDataBroker = LibStub("LibDataBroker-1.1")
+local LibDBIcon = LibStub("LibDBIcon-1.0")
+
 local checkboxes = 0
 
 local prefix = "ldskcr"
@@ -54,7 +58,6 @@ local settings = {
 
 function LidskiyCraft.OnReady()
 
-	-- set up default options
 	_G.LidskiyPrefs = _G.LidskiyPrefs or {};
 
 	for k,v in pairs(LidskiyCraft.default_options) do
@@ -64,6 +67,23 @@ function LidskiyCraft.OnReady()
 	end
 
 	LidskiyCraft.CreateUIFrame();
+
+    local WKLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject(addonName, {
+    type = "launcher",
+    icon = "Interface/AddOns/LidskiyCraft/Images/icon.blp",
+    OnClick = function(clickedframe, button)
+        if LidskiyCraft.UIFrame:IsShown() then
+            LidskiyCraft.UIFrame:Hide()
+        else
+            LidskiyCraft.UIFrame:Show()
+        end
+    end,
+    })
+
+    _G.LidskiyPrefs.minimap = _G.LidskiyPrefs.minimap or { hide = false }  
+
+    LibDBIcon:Register(addonName, WKLDB, _G.LidskiyPrefs.minimap)
+    LibDBIcon:AddButtonToCompartment(addonName)
 end
 
 function LidskiyCraft.CreateUIFrame()
