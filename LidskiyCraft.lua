@@ -59,6 +59,7 @@ local settings = {
 function LidskiyCraft.OnReady()
 
 	_G.LidskiyPrefs = _G.LidskiyPrefs or {};
+    _G.LidskiyPrefs.isShown = _G.LidskiyPrefs.isShown or false;
 
 	for k,v in pairs(LidskiyCraft.default_options) do
 		if (not _G.LidskiyPrefs[k]) then
@@ -68,15 +69,15 @@ function LidskiyCraft.OnReady()
 
 	LidskiyCraft.CreateUIFrame();
 
+    if (not _G.LidskiyPrefs.isShown) then
+        LidskiyCraft.UIFrame:Hide()
+    end
+
     local WKLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject(addonName, {
     type = "launcher",
     icon = "Interface/AddOns/LidskiyCraft/Images/icon.blp",
     OnClick = function(clickedframe, button)
-        if LidskiyCraft.UIFrame:IsShown() then
-            LidskiyCraft.UIFrame:Hide()
-        else
-            LidskiyCraft.UIFrame:Show()
-        end
+        LidskiyCraft.SwitchView();
     end,
     })
 
@@ -84,6 +85,16 @@ function LidskiyCraft.OnReady()
 
     LibDBIcon:Register(addonName, WKLDB, _G.LidskiyPrefs.minimap)
     LibDBIcon:AddButtonToCompartment(addonName)
+end
+
+function LidskiyCraft.SwitchView()
+        if LidskiyCraft.UIFrame:IsShown() then
+            LidskiyCraft.UIFrame:Hide()
+            _G.LidskiyPrefs.isShown = false; 
+        else
+            LidskiyCraft.UIFrame:Show()
+            _G.LidskiyPrefs.isShown = true;  
+        end
 end
 
 function LidskiyCraft.CreateUIFrame()
@@ -113,11 +124,7 @@ function LidskiyCraft.CreateUIFrame()
 
 	SLASH_LIDSKIYCRAFT1 = "/lc"
 	SlashCmdList["LIDSKIYCRAFT"] = function()
-    	if LidskiyCraft.UIFrame:IsShown() then
-        	LidskiyCraft.UIFrame:Hide()
-    	else
-        	LidskiyCraft.UIFrame:Show()
-    	end
+    	LidskiyCraft.SwitchView()
 	end
 
 	table.insert(UISpecialFrames, "Frame")
