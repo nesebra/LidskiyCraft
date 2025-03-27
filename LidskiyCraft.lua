@@ -9,6 +9,10 @@ LidskiyCraft.default_options = {
 	hide = false,
 };
 
+local addonName = "LidskiyCraft"
+local LibDataBroker = LibStub("LibDataBroker-1.1")
+local LibDBIcon = LibStub("LibDBIcon-1.0")
+
 local checkboxes = 0
 
 local prefix = "ldskcr"
@@ -47,15 +51,15 @@ local settings = {
         settingKey = "isCraftsForBlyatVlad"
     },
     {
-        settingText = "Сообщить, что перезайду v.0.1 :)",
+        settingText = "Сообщить, что перезайду",
         settingKey = "isNeedToRelogin"
     }
 }
 
 function LidskiyCraft.OnReady()
 
-	-- set up default options
 	_G.LidskiyPrefs = _G.LidskiyPrefs or {};
+    _G.LidskiyPrefs.isShown = _G.LidskiyPrefs.isShown or false;
 
 	for k,v in pairs(LidskiyCraft.default_options) do
 		if (not _G.LidskiyPrefs[k]) then
@@ -64,6 +68,33 @@ function LidskiyCraft.OnReady()
 	end
 
 	LidskiyCraft.CreateUIFrame();
+
+    if (not _G.LidskiyPrefs.isShown) then
+        LidskiyCraft.UIFrame:Hide()
+    end
+
+    local WKLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject(addonName, {
+    type = "launcher",
+    icon = "Interface/AddOns/LidskiyCraft/Images/icon.blp",
+    OnClick = function(clickedframe, button)
+        LidskiyCraft.SwitchView();
+    end,
+    })
+
+    _G.LidskiyPrefs.minimap = _G.LidskiyPrefs.minimap or { hide = false }  
+
+    LibDBIcon:Register(addonName, WKLDB, _G.LidskiyPrefs.minimap)
+    LibDBIcon:AddButtonToCompartment(addonName)
+end
+
+function LidskiyCraft.SwitchView()
+        if LidskiyCraft.UIFrame:IsShown() then
+            LidskiyCraft.UIFrame:Hide()
+            _G.LidskiyPrefs.isShown = false; 
+        else
+            LidskiyCraft.UIFrame:Show()
+            _G.LidskiyPrefs.isShown = true;  
+        end
 end
 
 function LidskiyCraft.CreateUIFrame()
@@ -93,11 +124,7 @@ function LidskiyCraft.CreateUIFrame()
 
 	SLASH_LIDSKIYCRAFT1 = "/lc"
 	SlashCmdList["LIDSKIYCRAFT"] = function()
-    	if LidskiyCraft.UIFrame:IsShown() then
-        	LidskiyCraft.UIFrame:Hide()
-    	else
-        	LidskiyCraft.UIFrame:Show()
-    	end
+    	LidskiyCraft.SwitchView()
 	end
 
 	table.insert(UISpecialFrames, "Frame")
@@ -256,15 +283,15 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
 
             if (isCloth) then
-            	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
         	end
 
         	if (isStaff) then
-            	LidskiyCraft.SendCraftMessage("2k", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage("1к", target, "Пыткакалом", text)
         	end
 
             if (isInstrumentCloth) then               
-                LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
+                LidskiyCraft.SendCraftMessage("2k", target, "Пыткакалом", text)
             end
 
 		end
@@ -280,7 +307,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isInstrumentsCraftsForDaddy"]) then
 
 			if (isInstrument) then
-                LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
+                LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
             end
 
 		end
@@ -288,15 +315,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isRingsCraftsForDaddy"]) then
 
 			if (isJewerly) then
-            	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
-                else
-                	LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
-            	end
+            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
         	end
 
             if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("1k", target, "Есдэдди", text)
             end	
         end            
 
@@ -666,7 +689,7 @@ function LidskiyCraft.IsMessageUsefull(message)
 end
 
 function LidskiyCraft.SendCraftMessage(price, target, character, targetText) 
-    local text = "ку! " .. price .. ". t3 реги, заказ на " .. character
+    local text = "ку! " .. price .. ", ник: " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
 
     local player = UnitName("player")
