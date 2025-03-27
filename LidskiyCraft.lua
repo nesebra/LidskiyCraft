@@ -283,11 +283,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
 
             if (isCloth) then
-            	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage("2.5k", target, "Пыткакалом", text)
         	end
 
         	if (isStaff) then
-            	LidskiyCraft.SendCraftMessage("1к", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage("500г", target, "Пыткакалом", text)
         	end
 
             if (isInstrumentCloth) then               
@@ -319,7 +319,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
         	end
 
             if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("1k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("500г.", target, "Есдэдди", text)
             end	
         end            
 
