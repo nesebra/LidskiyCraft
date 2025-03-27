@@ -326,7 +326,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
 
 			if (isLeather) then
-            	LidskiyCraft.SendVladCraftMessage("4k", target, "Пивнойвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage("1к", target, "Пивнойвлэд", text)
             end	
 
 		end
@@ -335,14 +335,14 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 
 			if (isWeapons) then
 				if (Is636) then
-                	LidskiyCraft.SendVladCraftMessage("4k", target, "Блэтвлэд", text)
+                	LidskiyCraft.SendVladCraftMessage("1к", target, "Блэтвлэд", text)
                 else
-                	LidskiyCraft.SendVladCraftMessage("3k", target, "Блэтвлэд", text)
+                	LidskiyCraft.SendVladCraftMessage("1к", target, "Блэтвлэд", text)
             	end            	
             end	
 
             if (isEngineering) then
-            	LidskiyCraft.SendVladCraftMessage("3k", target, "Блэтвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage("1к", target, "Блэтвлэд", text)
             end	
 
 		end        
@@ -508,7 +508,23 @@ function LidskiyCraft.IsLeather(message)
     or string.find(message, "Шапка глубинного следопыта") ~= nil 
     or string.find(message, "Рунический жезл из нуль") ~= nil 
     or string.find(message, "Скипетр сияющей магии") ~= nil 
-
+    or string.find(message, "Гравированные символами тяжелые наручи") ~= nil 
+    or string.find(message, "Кольчужные манжеты алгарийского бойца") ~= nil 
+    or string.find(message, "Оплечье с руническим клеймом") ~= nil 
+    or string.find(message, "Гравированная символами обвязка") ~= nil 
+    or string.find(message, "Гравированные символами высокие ботинки") ~= nil 
+    or string.find(message, "Гравированные символами рукавицы") ~= nil 
+    or string.find(message, "Кольчужные ботфорты алгарийского бойца") ~= nil 
+    or string.find(message, "Кольчужные рукавицы алгарийского бойца") ~= nil 
+    or string.find(message, "Кольчужный ремень алгарийского бойца") ~= nil 
+    or string.find(message, "Гравированные символами шоссы") ~= nil 
+    or string.find(message, "Гравированная символами полумаска") ~= nil 
+    or string.find(message, "Кольчужный клобук алгарийского бойца") ~= nil 
+    or string.find(message, "Кольчужные поножи алгарийского бойца") ~= nil 
+    or string.find(message, "Гравированные символами эполеты") ~= nil 
+    or string.find(message, "Кольчужные эполеты алгарийского бойца") ~= nil 
+    or string.find(message, "Гравированная символами кираса") ~= nil 
+    or string.find(message, "Кольчужный доспех алгарийского бойца") ~= nil
     return isLeather 
 
 end
@@ -533,7 +549,33 @@ function LidskiyCraft.IsWeapons(message)
     or string.find(message, "Заряженный заклинатель") ~= nil 
     or string.find(message, "Вытягивающий стилет") ~= nil 
     or string.find(message, "Выкованные навеки тяжелые наручи") ~= nil 
-
+    or string.find(message, "Выкованный навеки шлем") ~= nil 
+    or string.find(message, "Большой меч алгарийского бойца") ~= nil 
+    or string.find(message, "Вертел алгарийского бойца") ~= nil 
+    or string.find(message, "Кинжал алгарийского бойца") ~= nil 
+    or string.find(message, "Кирка алгарийского бойца") ~= nil 
+    or string.find(message, "Латные нарукавники алгарийского бойца") ~= nil 
+    or string.find(message, "Меч алгарийского бойца") ~= nil 
+    or string.find(message, "Скипетр алгарийского бойца") ~= nil 
+    or string.find(message, "Топор алгарийского бойца") ~= nil 
+    or string.find(message, "Щит алгарийского бойца") ~= nil 
+    or string.find(message, "Латный шлем алгарийского бойца") ~= nil 
+    or string.find(message, "Выкованные навеки башмаки") ~= nil 
+    or string.find(message, "Освященные шаги") ~= nil 
+    or string.find(message, "Латные башмаки алгарийского бойца") ~= nil 
+    or string.find(message, "Выкованный навеки большой пояс") ~= nil 
+    or string.find(message, "Латный воинский пояс алгарийского бойца") ~= nil 
+    or string.find(message, "Выкованные навеки рукавицы") ~= nil 
+    or string.find(message, "Латные рукавицы алгарийского бойца") ~= nil 
+    or string.find(message, "Выкованное навеки наплечье") ~= nil 
+    or string.find(message, "Латные наголенники алгарийского бойца") ~= nil 
+    or string.find(message, "Латное наплечье алгарийского бойца") ~= nil 
+    or string.find(message, "Выкованные навеки ножные латы") ~= nil 
+    or string.find(message, "Кирка ремесленника") ~= nil 
+    or string.find(message, "Набор кузнеца") ~= nil 
+    or string.find(message, "Нож кожевника") ~= nil 
+    or string.find(message, "Нож ремесленника") ~= nil 
+    or string.find(message, "Серп ремесленника") ~= nil 
     return isWeapons 
        
 end
@@ -557,6 +599,14 @@ function LidskiyCraft.IsEngineering(message)
     or string.find(message, "Акиритовый проектор мозговых волн") ~= nil
     or string.find(message, "Заряженный акиритом самофланж") ~= nil
     or string.find(message, "Пружинные портновские ножницы") ~= nil
+    or string.find(message, "Заряженный усилитель мышления") ~= nil
+    or string.find(message, "Опасный ингибитор отвлечения") ~= nil
+    or string.find(message, "Перегруженный генератор идей") ~= nil
+    or string.find(message, "Ускоритель мыслительного процесса") ~= nil
+    or string.find(message, "Кожаные очки алгарийского бойца") ~= nil
+    or string.find(message, "Кольчужные очки алгарийского бойца") ~= nil
+    or string.find(message, "Латные очки алгарийского бойца") ~= nil
+    or string.find(message, "Тканевые очки алгарийского бойца") ~= nil
 
     return isEngineering 
        
@@ -669,7 +719,7 @@ function LidskiyCraft.SendReloginMessage(target)
 end  
 
 function LidskiyCraft.SendMessage(target, text, targetText)
-	C_Timer.After(2, function()
+	C_Timer.After(1, function()
 	print(target .. ": " .. targetText)
 	SendChatMessage(text, "WHISPER", nil, target)
     PlaySoundFile("Interface\\AddOns\\LidskiyCraft\\Sounds\\message-notification.mp3", "master")
