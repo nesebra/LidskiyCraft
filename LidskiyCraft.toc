@@ -3,7 +3,7 @@
 ## Notes: Base for new WoW addons
 ## Author: nesebra
 ## Version: 1.0.0
-## SavedVariablesPerCharacter: LidskiyPrefs
+## SavedVariables: LidskiyPrefs
 
 Libs\LibStub\LibStub.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua

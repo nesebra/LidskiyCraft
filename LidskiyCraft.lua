@@ -19,40 +19,59 @@ local prefix = "ldskcr"
 
 local settings = {
     {
-        settingText = "Forward to Officer",
-        settingKey = "isForwarderEnabled"
+        checkboxText = "Forward to Officer",
+        settingKey = "isForwarderEnabled",
+        checkboxPrice = nil
     },
     {
-        settingText = "Listen Forwarder",
-        settingKey = "isListenForwarder"
+        checkboxText = "Listen Forwarder",
+        settingKey = "isListenForwarder",
+        checkboxPrice = nil
     },
     {
-        settingText = "Пыткакалом (ткань + посох/оффхенд)",
-        settingKey = "isCraftsForKal"
+        checkboxText = "Пыткакалом (начертание)",
+        settingKey = "isInscription",
+        checkboxPrice = "500г"
     },
     {
-        settingText = "Пыткакалом (трактаты)",
-        settingKey = "isTractatCraftsForKal"
+        checkboxText = "Пыткакалом (портняжное)",
+        settingKey = "isTailoring",
+        checkboxPrice = "2к"
     },
     {
-        settingText = "Есдэдди (инструменты)",
-        settingKey = "isInstrumentsCraftsForDaddy"
+        checkboxText = "Пыткакалом (трактаты)",
+        settingKey = "isInscriptionTractats",
+        checkboxPrice = "500г"
     },
     {
-        settingText = "Есдэдди (бижа)",
-        settingKey = "isRingsCraftsForDaddy"
+        checkboxText = "Есдэдди (инструменты)",
+        settingKey = "isBlacksmithingInstruments",
+        checkboxPrice = "1к"
     },
     {
-        settingText = "Пивнойвлэд (кожа)",
-        settingKey = "isCraftsForBeerVlad"
+        checkboxText = "Есдэдди (бижа)",
+        settingKey = "isJewelry",
+        checkboxPrice = "1к"
     },
     {
-        settingText = "Блэтвлэд (кузнечное + инженерное)",
-        settingKey = "isCraftsForBlyatVlad"
+        checkboxText = "Пивнойвлэд (кожа)",
+        settingKey = "isLeather",
+        checkboxPrice = "1к"
     },
     {
-        settingText = "Сообщить, что перезайду",
-        settingKey = "isNeedToRelogin"
+        checkboxText = "Блэтвлэд (кузнечное)",
+        settingKey = "isBlacksmithing",
+        checkboxPrice= "1к"
+    },
+    {
+        checkboxText = "Блэтвлэд (инженерное)",
+        settingKey = "isEngineering",
+        checkboxPrice= "1к"
+    },
+    {
+        checkboxText = "Сообщить, что перезайду",
+        settingKey = "isNeedToRelogin",
+        checkboxPrice = nil
     }
 }
 
@@ -99,9 +118,8 @@ end
 
 function LidskiyCraft.CreateUIFrame()
 
-	-- create the UI frame
 	LidskiyCraft.UIFrame = CreateFrame("Frame",nil,UIParent,"BasicFrameTemplateWithInset");
-	LidskiyCraft.UIFrame:SetSize(270,310);
+	LidskiyCraft.UIFrame:SetSize(250,370);
 	LidskiyCraft.UIFrame:SetPoint(_G.LidskiyPrefs.frameRef, _G.LidskiyPrefs.frameX, _G.LidskiyPrefs.frameY);
 	LidskiyCraft.UIFrame.TitleBg:SetHeight(30);
 	LidskiyCraft.UIFrame.title = LidskiyCraft.UIFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
@@ -120,8 +138,6 @@ function LidskiyCraft.CreateUIFrame()
 		self:StopMovingOrSizing()
 	end)
 
-	--LidskiyCraft.UIFrame:Hide()
-
 	SLASH_LIDSKIYCRAFT1 = "/lc"
 	SlashCmdList["LIDSKIYCRAFT"] = function()
     	LidskiyCraft.SwitchView()
@@ -129,28 +145,51 @@ function LidskiyCraft.CreateUIFrame()
 
 	table.insert(UISpecialFrames, "Frame")
 
-	-------
-
-	if not LidskiyPrefs.settingsKeys then
-   	    LidskiyPrefs.settingsKeys = {}
+	if not _G.LidskiyPrefs.checkboxes then
+   	    _G.LidskiyPrefs.checkboxes = {}
    	end
 
+    if not _G.LidskiyPrefs.checkboxPrices then
+        _G.LidskiyPrefs.checkboxPrices = {}
+    end
+
     for _, setting in pairs(settings) do
-     	CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
+     	CreateCheckbox(setting.checkboxText, setting.settingKey, setting.settingTooltip, setting.checkboxPrice)
     end
 end
 
-function CreateCheckbox(checkboxText, key, checkboxTooltip)
+function CreateCheckbox(checkboxText, key, checkboxTooltip, checkboxPrice)
     local checkbox = CreateFrame("CheckButton", "LidskiyCraftCheckboxID" .. checkboxes, LidskiyCraft.UIFrame, "UICheckButtonTemplate")
 
     checkbox.Text:SetText(checkboxText)
     checkbox:SetPoint("TOPLEFT", LidskiyCraft.UIFrame, "TOPLEFT", 10, -30 + (checkboxes * -30))
 
-    if LidskiyPrefs.settingsKeys[key] == nil then
-        LidskiyPrefs.settingsKeys[key] = false
+    if checkboxPrice then
+        local editBox = CreateFrame("EditBox", "LidskiyCraftEditBoxID" .. checkboxes, LidskiyCraft.UIFrame, "InputBoxTemplate")
+        editBox:SetSize(40, 20)
+        editBox:SetPoint("LEFT", checkbox, "RIGHT", 150, 0)
+        editBox:SetAutoFocus(false)
+
+        if _G.LidskiyPrefs.checkboxPrices[key] == nil then
+            _G.LidskiyPrefs.checkboxPrices[key] = checkboxPrice 
+        end
+
+        editBox:SetText(_G.LidskiyPrefs.checkboxPrices[key])
+
+        editBox:SetScript("OnTextChanged", function(self)
+            _G.LidskiyPrefs.checkboxPrices[key] = self:GetText()
+        end)
+    
+        editBox:SetScript("OnEnterPressed", function(self)           
+            self:ClearFocus()
+        end)
     end
 
-    checkbox:SetChecked(LidskiyPrefs.settingsKeys[key])
+    if _G.LidskiyPrefs.checkboxes[key] == nil then
+        _G.LidskiyPrefs.checkboxes[key] = false
+    end
+
+    checkbox:SetChecked(_G.LidskiyPrefs.checkboxes[key])
 
     checkbox:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -162,7 +201,7 @@ function CreateCheckbox(checkboxText, key, checkboxTooltip)
     end)
 
     checkbox:SetScript("OnClick", function(self)
-        LidskiyPrefs.settingsKeys[key] = self:GetChecked()
+        _G.LidskiyPrefs.checkboxes[key] = self:GetChecked()
     end)
 
     checkboxes = checkboxes + 1
@@ -185,7 +224,7 @@ function LidskiyCraft.OnUpdate()
 		return;
 	end
 
-	if (LidskiyPrefs.hide) then 
+	if (_G.LidskiyPrefs.hide) then 
 		return;
 	end
 
@@ -216,8 +255,8 @@ function LidskiyCraft.OnEvent(frame, event, ...)
 	if (event == "CHAT_MSG_CHANNEL") then      
 		local text, playerName, _, channelName = ...
 		
-		local isForwarderEnabled = LidskiyPrefs.settingsKeys["isForwarderEnabled"]
-		local isListenForwarder = LidskiyPrefs.settingsKeys["isListenForwarder"]
+		local isForwarderEnabled = _G.LidskiyPrefs.checkboxes["isForwarderEnabled"]
+		local isListenForwarder = _G.LidskiyPrefs.checkboxes["isListenForwarder"]
 		local target = string.gsub(playerName, "%-[^||||]+", "")		
 
 		if (isForwarderEnabled == true) then
@@ -234,8 +273,8 @@ function LidskiyCraft.OnEvent(frame, event, ...)
 	if (event == 'CHAT_MSG_ADDON') then
 		local prefix, text, channel, sender, target = ... 
 
-		local isForwarderEnabled = LidskiyPrefs.settingsKeys["isForwarderEnabled"]
-		local isListenForwarder = LidskiyPrefs.settingsKeys["isListenForwarder"]
+		local isForwarderEnabled = _G.LidskiyPrefs.checkboxes["isForwarderEnabled"]
+		local isListenForwarder = _G.LidskiyPrefs.checkboxes["isListenForwarder"]
 
 		if (isListenForwarder == true) then
 
@@ -280,72 +319,76 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		local Is619 = LidskiyCraft.Is619(text)
 		local Is636 = LidskiyCraft.Is636(text)
 
-		if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
-
-            if (isCloth) then
-            	LidskiyCraft.SendCraftMessage("2.5k", target, "Пыткакалом", text)
-        	end
+		if (_G.LidskiyPrefs.checkboxes["isInscription"]) then
 
         	if (isStaff) then
-            	LidskiyCraft.SendCraftMessage("500г", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage(_G.LidskiyPrefs.checkboxPrices["isInscription"], target, "Пыткакалом", text)
         	end
-
-            if (isInstrumentCloth) then               
-                LidskiyCraft.SendCraftMessage("2k", target, "Пыткакалом", text)
-            end
-
 		end
 
-		if (LidskiyPrefs.settingsKeys["isTractatCraftsForKal"]) then
+        if (_G.LidskiyPrefs.checkboxes["isTailoring"]) then
+
+            if (isCloth) then
+                LidskiyCraft.SendCraftMessage(_G.LidskiyPrefs.checkboxPrices["isTailoring"], target, "Пыткакалом", text)
+            end
+
+            if (isInstrumentCloth) then               
+                LidskiyCraft.SendCraftMessage(_G.LidskiyPrefs.checkboxPrices["isTailoring"], target, "Пыткакалом", text)
+            end
+
+        end
+
+		if (_G.LidskiyPrefs.checkboxes["isInscriptionTractats"]) then
 
 			if (isTraktat) then
-                LidskiyCraft.SendTraktatCraftMessage("500g", target, "Пыткакалом", text)
+                LidskiyCraft.SendTraktatCraftMessage(_G.LidskiyPrefs.checkboxPrices["isInscriptionTractats"], target, "Пыткакалом", text)
             end        	
 				
 		end
 
-		if (LidskiyPrefs.settingsKeys["isInstrumentsCraftsForDaddy"]) then
+		if (_G.LidskiyPrefs.checkboxes["isBlacksmithingInstruments"]) then
 
 			if (isInstrument) then
-                LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
+                LidskiyCraft.SendCraftMessage(_G.LidskiyPrefs.checkboxPrices["isBlacksmithingInstruments"], target, "Есдэдди", text)
             end
 
 		end
 
-		if (LidskiyPrefs.settingsKeys["isRingsCraftsForDaddy"]) then
+		if (_G.LidskiyPrefs.checkboxes["isJewelry"]) then
 
-			if (isJewerly) then
-            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
+			if (isJewerly or isPvPJewerly) then
+            	LidskiyCraft.SendCraftMessage(_G.LidskiyPrefs.checkboxPrices["isJewelry"], target, "Есдэдди", text)
         	end
 
-            if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("500г.", target, "Есдэдди", text)
-            end	
         end            
 
-		if (LidskiyPrefs.settingsKeys["isCraftsForBeerVlad"]) then
+		if (_G.LidskiyPrefs.checkboxes["isLeather"]) then
 
 			if (isLeather) then
-            	LidskiyCraft.SendVladCraftMessage("1к", target, "Пивнойвлэд", text)
+            	LidskiyCraft.SendVladCraftMessage(_G.LidskiyPrefs.checkboxPrices["isLeather"], target, "Пивнойвлэд", text)
             end	
 
 		end
 
-		if (LidskiyPrefs.settingsKeys["isCraftsForBlyatVlad"]) then
+		if (_G.LidskiyPrefs.checkboxes["isBlacksmithing"]) then
 
 			if (isWeapons) then
 				if (Is636) then
-                	LidskiyCraft.SendVladCraftMessage("1к", target, "Блэтвлэд", text)
+                	LidskiyCraft.SendVladCraftMessage(_G.LidskiyPrefs.checkboxPrices["isBlacksmithing"], target, "Блэтвлэд", text)
                 else
-                	LidskiyCraft.SendVladCraftMessage("1к", target, "Блэтвлэд", text)
+                	LidskiyCraft.SendVladCraftMessage(_G.LidskiyPrefs.checkboxPrices["isBlacksmithing"], target, "Блэтвлэд", text)
             	end            	
             end	
 
-            if (isEngineering) then
-            	LidskiyCraft.SendVladCraftMessage("1к", target, "Блэтвлэд", text)
-            end	
+		end 
 
-		end        
+        if (_G.LidskiyPrefs.checkboxes["isEngineering"]) then
+
+            if (isEngineering) then
+                LidskiyCraft.SendVladCraftMessage(_G.LidskiyPrefs.checkboxPrices["isEngineering"], target, "Блэтвлэд", text)
+            end 
+
+        end         
 
 end
 
@@ -694,7 +737,7 @@ function LidskiyCraft.SendCraftMessage(price, target, character, targetText)
 
     local player = UnitName("player")
 
-    if (player ~= character and LidskiyPrefs.settingsKeys["isNeedToRelogin"]) then
+    if (player ~= character and _G.LidskiyPrefs.checkboxes["isNeedToRelogin"]) then
         LidskiyCraft.SendReloginMessage(target)
     end
 
