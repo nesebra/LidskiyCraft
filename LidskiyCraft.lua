@@ -51,7 +51,7 @@ local settings = {
         settingKey = "isCraftsForBlyatVlad"
     },
     {
-        settingText = "Сообщить, что перезайду v.0.1 :)",
+        settingText = "Сообщить, что перезайду",
         settingKey = "isNeedToRelogin"
     }
 }
@@ -283,15 +283,15 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isCraftsForKal"]) then
 
             if (isCloth) then
-            	LidskiyCraft.SendCraftMessage("4k", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage("3k", target, "Пыткакалом", text)
         	end
 
         	if (isStaff) then
-            	LidskiyCraft.SendCraftMessage("2k", target, "Пыткакалом", text)
+            	LidskiyCraft.SendCraftMessage("1к", target, "Пыткакалом", text)
         	end
 
             if (isInstrumentCloth) then               
-                LidskiyCraft.SendCraftMessage("5k", target, "Пыткакалом", text)
+                LidskiyCraft.SendCraftMessage("2k", target, "Пыткакалом", text)
             end
 
 		end
@@ -307,7 +307,7 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isInstrumentsCraftsForDaddy"]) then
 
 			if (isInstrument) then
-                LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
+                LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
             end
 
 		end
@@ -315,15 +315,11 @@ function LidskiyCraft.AnalyzeMessage(target, text)
 		if (LidskiyPrefs.settingsKeys["isRingsCraftsForDaddy"]) then
 
 			if (isJewerly) then
-            	if (Is636) then
-                	LidskiyCraft.SendCraftMessage("4k", target, "Есдэдди", text)
-                else
-                	LidskiyCraft.SendCraftMessage("3k", target, "Есдэдди", text)
-            	end
+            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
         	end
 
             if (isPvPJewerly) then
-            	LidskiyCraft.SendCraftMessage("2k", target, "Есдэдди", text)
+            	LidskiyCraft.SendCraftMessage("1k", target, "Есдэдди", text)
             end	
         end            
 
@@ -643,7 +639,7 @@ function LidskiyCraft.IsMessageUsefull(message)
 end
 
 function LidskiyCraft.SendCraftMessage(price, target, character, targetText) 
-    local text = "ку! " .. price .. ". t3 реги, заказ на " .. character
+    local text = "ку! " .. price .. ", ник: " .. character
     LidskiyCraft.SendMessage(target, text, targetText)
 
     local player = UnitName("player")
